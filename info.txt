@@ -1,0 +1,62 @@
+From: http://forum.7bot.cc/read.php?1,6
+
+Well as I did not want wait for the software to play with my little robot, here is what I have found out so far.
+
+Pinout for Arduino Due is
+
+Axis 1; Readout = A0 ; ServoControl D2
+Axis 2; Readout = A1 ; ServoControl D3
+Axis 3; Readout = A2 ; ServoControl D4
+Axis 4; Readout = A3 ; ServoControl D5
+Axis 5; Readout = A4 ; ServoControl D6
+Axis 6; Readout = A5 ; ServoControl D7
+Axis 7; Readout = A6 ; ServoControl D8
+
+Pomp Valve; Control D10 ; Low means open (suction); High closed (no suction)
+Pomp motor; Control D11 ; High is on; Low is off
+Beep; Control D12 ; High is very irritating noise, Low is peace
+
+Left Button; Readout D71
+Right Button; Readout D70
+
+
+
+Basic Arduino code to sweep robot from left to right and back again in a loop, while displaying analog output:
+
+
+#include <Servo.h>
+
+Servo myservo; // create servo object to control a servo
+// twelve servo objects can be created on most boards
+
+int pos = 0; // variable to store the servo position
+int s1 = 0; // variale to store the servo read out
+
+int ServoReadPort = 0; // analog port 0
+int ServoWritePort = 2; // digital port 2
+
+void setup() {
+    Serial.begin(9600);
+    myservo.attach(ServoWritePort); // attaches the servo on pin 9 to the servo object
+}
+
+void loop() {
+    for (pos = 0; pos <= 180; pos += 1) { // goes from 0 degrees to 180 degrees
+	// in steps of 1 degree
+	myservo.write(pos); // tell servo to go to position in variable 'pos'
+	s1 = analogRead(ServoReadPort);
+	Serial.println(s1); // tell servo to go to position in variable 'pos'
+
+	delay(15); // waits 15ms for the servo to reach the position
+    }
+    delay(5000);
+    for (pos = 180; pos >= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
+        myservo.write(pos); // tell servo to go to position in variable 'pos'
+	s1 = analogRead(ServoReadPort);
+	Serial.println(s1); // tell servo to go to position in variable 'pos'
+
+	delay(15); // waits 15ms for the servo to reach the position
+    }
+    delay(5000);
+}
+
